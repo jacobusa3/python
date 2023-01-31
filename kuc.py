@@ -2,13 +2,14 @@
 import yfinance as yf
 import time
 import pandas as pd
+import streamlit as st
 
 while(True):
 
     pd.set_option('display.width', 1000)
     pd.set_option('display.max_columns', 500)
     symbol = yf.Ticker("BTC-USD")
-    df = symbol.history(start="2022-12-1", end="2023-2-2", period="max", interval="5m")
+    df = symbol.history(start="2023-1-1", end="2023-2-2", period="max", interval="5m")
     df.head(100)
 
     #print(df['30 day ma'])
@@ -33,24 +34,24 @@ while(True):
     df.dropna(inplace=True)
 
     # printing Dataframe
-    print(df)
+    st.write(df)
 
-    last = (df.iloc[-1:])
-    print(last)
-    lastcolumn30= df.iloc[-1]["SMA30"]
-    print(lastcolumn30)
-    lastcolumn9= df.iloc[-1]["SMA9"]
-    print(lastcolumn9)
+    #last = (df.iloc[-1:])
+    #print(last)
+    #lastcolumn30= df.iloc[-1]["SMA30"]
+    #print(lastcolumn30)
+    #lastcolumn9= df.iloc[-1]["SMA9"]
+    #print(lastcolumn9)
 
     #if df.iloc[-1]["SMA30"] > df.iloc[-1]["SMA9"]:
        # print("30>9")
     #time.sleep(60)
 
-    if lastcolumn30 > lastcolumn9:
-        print("SELL")
-    elif lastcolumn30 < lastcolumn9:
-        print("BUY")
-    else:
-        print("Intersect")
+    #if lastcolumn30 > lastcolumn9:
+        #print("SELL")
+    #elif lastcolumn30 < lastcolumn9:
+        #print("BUY")
+    #else:
+        #print("Intersect")
 
 Return()
