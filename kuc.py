@@ -1,42 +1,56 @@
-import ccxt
+
+import yfinance as yf
+import time
 import pandas as pd
-kucoin = ccxt.kucoin()
 
+while(True):
 
-#BITCOIN:
-# set the symbol and the timeframe
-symbol = 'BTC/USDT'
-timeframe = '1d'
+    pd.set_option('display.width', 1000)
+    pd.set_option('display.max_columns', 500)
+    symbol = yf.Ticker("BTC-USD")
+    df = symbol.history(start="2022-12-1", end="2023-2-2", period="max", interval="5m")
+    df.head(100)
 
-# set the since and limit
-since = kucoin.milliseconds() - 30*24*60*60*1000
-limit = 30
+    #print(df['30 day ma'])
+    #df['30_day_ma'] = df['close'].rolling(window=30).mean()
+    #print(df)
 
-# fetch the historical cand data
-ohlcv = kucoin.fetch_ohlcv(symbol, timeframe, since, limit)
+    # updating our dataFrame to have only
+    # one column 'Close' as rest all columns
+    # are of no use for us at the moment
+    # using .to_frame() to convert pandas series
+    # into dataframe.
+    df = df['Close'].to_frame()
 
-# convert the data to pandas dataframe
-df = pd.DataFrame(ohlcv, columns=["time", "open", "high", "low", "close", "volume"])
+    # calculating simple moving average
+    # using .rolling(window).mean() ,
+    # with window size = 30
+    df['SMA30'] = df['Close'].rolling(30).mean()
+    df['SMA9'] = df['Close'].rolling(9).mean()
 
-#calculate the rolling mean for the last 30 days
+    # removing all the NULL values using
+    # dropna() method
+    df.dropna(inplace=True)
 
-df['30rolling_mean'] = df['close'].rolling(30).mean()
-df['9rolling_mean'] = df['close'].rolling(9).mean()
-mean30=df.iloc[-1]['30rolling_mean']
-mean9=df.iloc[-1]['9rolling_mean']
+    # printing Dataframe
+    print(df)
 
-print(symbol)
-print(mean30)
-print(mean9)
-#print(df1)
-#print(df
-if mean30 > mean9:
-    print("SELL")
-elif mean30 < mean9:
-    print("BUY")
-else:
-    print("Intersect")
-Depth=mean9-mean30
-print(Depth)
+    last = (df.iloc[-1:])
+    print(last)
+    lastcolumn30= df.iloc[-1]["SMA30"]
+    print(lastcolumn30)
+    lastcolumn9= df.iloc[-1]["SMA9"]
+    print(lastcolumn9)
 
+    #if df.iloc[-1]["SMA30"] > df.iloc[-1]["SMA9"]:
+       # print("30>9")
+    #time.sleep(60)
 
+    if lastcolumn30 > lastcolumn9:
+        print("SELL")
+    elif lastcolumn30 < lastcolumn9:
+        print("BUY")
+    else:
+        print("Intersect")
+
+Return()
